@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | Avoid The Void</title>
+    <title>Unity Web Player | PixelPlatformer</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
@@ -20,7 +20,7 @@
       <div id="unity-footer">
         <div id="unity-logo-title-footer"></div>
         <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">Avoid The Void</div>
+        <div id="unity-build-title">PixelPlatformer</div>
       </div>
     </div>
     <script>
@@ -52,12 +52,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/WebGL Builds.loader.js";
+      var loaderUrl = buildUrl + "/avoidthevoid.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/WebGL Builds.data",
-        frameworkUrl: buildUrl + "/WebGL Builds.framework.js",
-        codeUrl: buildUrl + "/WebGL Builds.wasm",
+        dataUrl: buildUrl + "/avoidthevoid.data",
+        frameworkUrl: buildUrl + "/avoidthevoid.framework.js",
+        codeUrl: buildUrl + "/avoidthevoid.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "PixelPlatformer",
@@ -98,8 +98,8 @@
 
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "1280";
-        canvas.style.height = "720";
+        canvas.style.width = "1280px";
+        canvas.style.height = "720px";
       }
 
       document.querySelector("#unity-loading-bar").style.display = "block";
