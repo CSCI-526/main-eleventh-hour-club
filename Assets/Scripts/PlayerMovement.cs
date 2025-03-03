@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = new Vector2(move * speed, rb.linearVelocity.y);
 
         // Jump if on Ground
-        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded)
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetAxisRaw("Vertical") > 0) && isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             isGrounded = false;
