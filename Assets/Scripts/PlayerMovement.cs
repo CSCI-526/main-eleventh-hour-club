@@ -79,6 +79,7 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
+        //Level 1
         if (collision.gameObject.CompareTag("DropTrigger"))
         {
             GameObject dropPlatform = GameObject.Find("DropFloor");
@@ -91,6 +92,41 @@ public class PlayerController : MonoBehaviour
         }
 
         if (collision.gameObject.CompareTag("DeathZone"))
+        {
+            Debug.Log("Player fell into Death Zone!");
+            StartCoroutine(StartFallSequence());
+        }
+
+        //Level 2
+        if (collision.gameObject.CompareTag("DropTriggerForFirst"))
+        {
+            GameObject dropPlatform = GameObject.Find("DropFloorFirst");
+
+            if (dropPlatform != null)
+            {
+                DroppingPlatform droppingPlatform = dropPlatform.GetComponent<DroppingPlatform>();
+                droppingPlatform?.TriggerDrop();
+            }
+        }
+
+        if (collision.gameObject.CompareTag("DeathZoneForFirst"))
+        {
+            Debug.Log("Player fell into Death Zone!");
+            StartCoroutine(StartFallSequence());
+        }
+
+        if (collision.gameObject.CompareTag("DropTriggerForSecond"))
+        {
+            GameObject dropPlatform = GameObject.Find("DropFloorSecond");
+
+            if (dropPlatform != null)
+            {
+                DroppingPlatform droppingPlatform = dropPlatform.GetComponent<DroppingPlatform>();
+                droppingPlatform?.TriggerDrop();
+            }
+        }
+
+        if (collision.gameObject.CompareTag("DeathZoneForSecond"))
         {
             Debug.Log("Player fell into Death Zone!");
             StartCoroutine(StartFallSequence());
