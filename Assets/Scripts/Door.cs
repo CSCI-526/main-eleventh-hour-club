@@ -92,7 +92,17 @@ public class Door : MonoBehaviour
         gameObject.SetActive(false);
         Debug.Log("Player fully disappeared inside door!");
 
-        Debug.Log("Level Transition...");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); //Replace this with next level [TEAM]
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        if (currentScene == "Level1_AvoidTheVoid")
+        {
+            Debug.Log("Player reached the door in Level 1! Transitioning to Level 2...");
+            SceneManager.LoadScene("Transition"); // Load the transition
+        }
+        else if (currentScene == "Level2_AvoidTheVoid")
+        {
+            Debug.Log("Player reached the door in Level 2! Restarting at Level 1...");
+            SceneManager.LoadScene("Level3_AvoidTheVoid"); // Go back to Level 3
+        }
     }
 }

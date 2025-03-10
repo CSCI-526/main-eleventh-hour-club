@@ -9,6 +9,10 @@ TagManager:
   - Ground
   - DropTrigger
   - DeathZone
+  - DropTriggerForFirst
+  - DropTriggerForSecond
+  - DeathZoneForFirst
+  - DeathZoneForSecond
   layers:
   - Default
   - TransparentFX
