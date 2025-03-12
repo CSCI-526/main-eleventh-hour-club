@@ -131,6 +131,52 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Player fell into Death Zone!");
             StartCoroutine(StartFallSequence());
         }
+
+
+        //Level 3
+
+        if (collision.CompareTag("DropTriggerForThird"))
+        {
+            // Find SafeArea_Right by name or use a public reference.
+            GameObject rightFloor = GameObject.Find("SafeArea_Right");
+            if (rightFloor != null)
+            {
+                ShrinkingPlatform shrinkScript = rightFloor.GetComponent<ShrinkingPlatform>();
+                if (shrinkScript != null)
+                {
+                    shrinkScript.TriggerShrink();
+                }
+            }
+        }
+
+        //Level 4
+
+        if (collision.CompareTag("DropTriggerForThird2"))
+        {
+            // Find SafeArea_Right by name or use a public reference.
+            GameObject rightFloor = GameObject.Find("SafeArea_Right");
+            if (rightFloor != null)
+            {
+                ShrinkingPlatform shrinkScript = rightFloor.GetComponent<ShrinkingPlatform>();
+                if (shrinkScript != null)
+                {
+                    shrinkScript.TriggerShrink();
+                }
+            }
+
+        }
+
+        if (collision.gameObject.CompareTag("DropTriggerForFourth"))
+        {
+            GameObject dropPlatform = GameObject.Find("DropFloorSecond");
+
+            if (dropPlatform != null)
+            {
+                DroppingPlatform droppingPlatform = dropPlatform.GetComponent<DroppingPlatform>();
+                droppingPlatform?.TriggerDrop();
+            }
+        }
+
     }
 
     public IEnumerator StartFallSequence()

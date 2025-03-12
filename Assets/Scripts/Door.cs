@@ -88,21 +88,39 @@ public class Door : MonoBehaviour
             yield return null;
         }
 
+        // ... inside CenterPlayerAndCloseDoor coroutine after door/player animation
         player.SetActive(false);
         gameObject.SetActive(false);
         Debug.Log("Player fully disappeared inside door!");
 
         string currentScene = SceneManager.GetActiveScene().name;
-
+        string nextLevel = "";
         if (currentScene == "Level1_AvoidTheVoid")
         {
             Debug.Log("Player reached the door in Level 1! Transitioning to Level 2...");
-            SceneManager.LoadScene("Transition"); // Load the transition
+            nextLevel = "Level2_AvoidTheVoid";
         }
         else if (currentScene == "Level2_AvoidTheVoid")
         {
-            Debug.Log("Player reached the door in Level 2! Restarting at Level 1...");
-            SceneManager.LoadScene("Level3_AvoidTheVoid"); // Go back to Level 3
+            Debug.Log("Player reached the door in Level 2! Transitioning to Level 3...");
+            nextLevel = "Level3_AvoidTheVoid";
         }
+        else if (currentScene == "Level3_AvoidTheVoid")
+        {
+            Debug.Log("Player reached the door in Level 3! Transitioning to Level 1...");
+            nextLevel = "Level4_AvoidTheVoid";
+        }
+        else if (currentScene == "Level4_AvoidTheVoid")
+        {
+            Debug.Log("Player reached the door in Level 3! Transitioning to Level 1...");
+            nextLevel = "Level1_AvoidTheVoid";
+        }
+
+        // Store the next level name so the transition scene can load it
+        PlayerPrefs.SetString("NextLevel", nextLevel);
+
+        // Load the transition scene (replace "Transition" with your actual transition scene name)
+        SceneManager.LoadScene("Transition");
+
     }
 }
