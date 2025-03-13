@@ -429,9 +429,9 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("Restarting game...");
 
         yield return new WaitForSeconds(0.5f); // change this later to match actual wait time
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-       ResetPlayer();
+       //ResetPlayer();
     }
 
     // private void ResetPlayer()
