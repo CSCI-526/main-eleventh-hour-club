@@ -242,6 +242,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
 
+        rb.gravityScale = 2.5f;
+
         leftLeg = transform.Find("LeftLeg/LeftLegSprite");
         rightLeg = transform.Find("RightLeg/RightLegSprite");
         leftHand = transform.Find("Hands/LeftHand");
