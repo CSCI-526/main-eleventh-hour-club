@@ -475,7 +475,7 @@ private void ResetPlayer()
     enabled = true;
     isFalling = false;
     playerCollider.enabled = true;
-    rb.gravityScale = 1f;
+    rb.gravityScale = 2.5f;
     this.transform.localPosition = startPos;
 
     // Reset all dropping platforms
