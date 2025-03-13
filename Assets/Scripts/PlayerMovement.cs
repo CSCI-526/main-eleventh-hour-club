@@ -480,6 +480,7 @@ private void ResetPlayer()
     isFalling = false;
     isGrounded = true;
     playerCollider.enabled = true;
+    jumpForce = 10f
 
     rb.bodyType = RigidbodyType2D.Kinematic; 
     rb.velocity = Vector2.zero; 
