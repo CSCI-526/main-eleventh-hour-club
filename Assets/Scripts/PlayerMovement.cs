@@ -263,6 +263,7 @@ public class PlayerController : MonoBehaviour
         {
             rb.gravityScale = 2.5f;
             rb.mass = 1f
+            yield return new WaitForFixedUpdate();
             
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             isGrounded = false;
@@ -485,9 +486,10 @@ private void ResetPlayer()
     rb.angularVelocity = 0f; 
     rb.gravityScale = 2.5f; 
 
-    yield return new WaitForSeconds(0.1f);
+    yield return new WaitForFixedUpdate();
     rb.bodyType = RigidbodyType2D.Dynamic; 
-
+    yield return new WaitForSeconds(0.1f);
+    
     this.transform.localPosition = startPos;
 
     // Reset all dropping platforms
