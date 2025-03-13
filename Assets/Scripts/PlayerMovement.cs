@@ -427,9 +427,9 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("Restarting game...");
 
         yield return new WaitForSeconds(0.5f); // change this later to match actual wait time
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-       //ResetPlayer();
+       ResetPlayer();
     }
 
     // private void ResetPlayer()
@@ -476,7 +476,6 @@ private void ResetPlayer()
     rightHand.localPosition -= new Vector3(0, 0.2f, 0);
     enabled = true;
     isFalling = false;
-    isGrounded = true;
     playerCollider.enabled = true;
 
     rb.bodyType = RigidbodyType2D.Kinematic; 
@@ -487,6 +486,7 @@ private void ResetPlayer()
     yield return new WaitForFixedUpdate();
     rb.bodyType = RigidbodyType2D.Dynamic; 
     yield return new WaitForSeconds(0.1f);
+    isGrounded = true;
     
     this.transform.localPosition = startPos;
 
