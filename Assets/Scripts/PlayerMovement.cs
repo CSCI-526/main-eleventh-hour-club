@@ -478,7 +478,6 @@ private void ResetPlayer()
     isFalling = false;
     isGrounded = true;
     playerCollider.enabled = true;
-    jumpForce = 10f
 
     rb.bodyType = RigidbodyType2D.Kinematic; 
     rb.velocity = Vector2.zero; 
@@ -513,6 +512,14 @@ private void ResetPlayer()
     }
 
     Debug.Log("All platforms have been reset.");
+}
+
+public void ResetPhysics()
+{
+    rb.velocity = Vector2.zero;
+    rb.gravityScale = 2.5f;
+    jumpForce = 6f;
+    Debug.Log("Physics Reset: Gravity and Jump Force Restored");
 }
 
 
