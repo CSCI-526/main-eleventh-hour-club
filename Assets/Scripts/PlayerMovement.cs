@@ -261,6 +261,9 @@ public class PlayerController : MonoBehaviour
         // Jump if on Ground
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetAxisRaw("Vertical") > 0) && isGrounded)
         {
+            rb.gravityScale = 2.5f;
+            rb.mass = 1f
+            
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             isGrounded = false;
         }
