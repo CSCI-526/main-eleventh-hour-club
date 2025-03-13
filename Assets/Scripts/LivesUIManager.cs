@@ -19,6 +19,12 @@ public class LivesUIManager : MonoBehaviour
             lives--;
             Debug.Log($"Life lost! Remaining lives: {lives}");
             UpdateLivesUI();
+
+            PlayerController player = FindObjectOfType<PlayerController>();
+            if (player != null)
+            {
+                player.ResetPhysics();
+            }
         }
 
         if (lives <= 0)
