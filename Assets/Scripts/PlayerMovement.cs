@@ -474,6 +474,7 @@ private void ResetPlayer()
     rightHand.localPosition -= new Vector3(0, 0.2f, 0);
     enabled = true;
     isFalling = false;
+    isGrounded = true;
     playerCollider.enabled = true;
     
     rb.mass = 1f;
