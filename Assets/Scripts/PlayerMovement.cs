@@ -476,11 +476,15 @@ private void ResetPlayer()
     isFalling = false;
     isGrounded = true;
     playerCollider.enabled = true;
-    
-    rb.mass = 1f;
-    rb.velocity = Vector2.zero;
-    rb.angularVelocity = 0f;
-    rb.gravityScale = 2.5f;
+
+    rb.bodyType = RigidbodyType2D.Kinematic; 
+    rb.velocity = Vector2.zero; 
+    rb.angularVelocity = 0f; 
+    rb.gravityScale = 2.5f; 
+
+    yield return new WaitForSeconds(0.1f);
+    rb.bodyType = RigidbodyType2D.Dynamic; 
+
     this.transform.localPosition = startPos;
 
     // Reset all dropping platforms
