@@ -6,12 +6,29 @@ public class Door : MonoBehaviour
 {
     private bool isClosing = false;
     private Vector3 initialDoorScale;
-    private float closeSpeed = 1f; 
-    private float closeDelay = 0.5f; 
+    private float closeSpeed = 1f;
+    private float closeDelay = 0.5f;
+
+    // Analytics Variables
+    private SendToGoogle _googleFormSender;
+    private PlayerController _playerController;
+
 
     void Start()
     {
         initialDoorScale = transform.localScale;
+        _googleFormSender = FindObjectOfType<SendToGoogle>();
+        _playerController = FindObjectOfType<PlayerController>();
+
+        if (_googleFormSender == null)
+        {
+            Debug.LogError("SendToGoogle script not found in the scene!");
+        }
+        if (_playerController == null)
+        {
+            Debug.LogError("PlayerController script not found in the scene!");
+        }
+        Debug.Log("Door Start - PlayerController found: " + (_playerController != null));
     }
 
     void OnTriggerStay2D(Collider2D collision)
@@ -59,8 +76,25 @@ public class Door : MonoBehaviour
         player.transform.position = targetPosition;
 
         Debug.Log("Player centered, closing door...");
-
+        Debug.Log("Level Completed Count before Increment: " + PlayerPrefs.GetInt("LevelCompletedCount", 0));
         yield return new WaitForSeconds(closeDelay);
+
+
+        if (_googleFormSender != null && playerController != null) // Send DoorReached data
+        {
+            // Increment level completed count BEFORE sending the data
+            int completedCount = PlayerPrefs.GetInt("LevelCompletedCount", 0);
+            completedCount++;
+            PlayerPrefs.SetInt("LevelCompletedCount", completedCount);
+            Debug.Log("Level Completed Count after Increment: " + PlayerPrefs.GetInt("LevelCompletedCount", 0));
+
+            int currentLevel = playerController.GetCurrentLevel();
+            int levelCompleted = PlayerPrefs.GetInt("LevelCompletedCount", 0);
+
+            _googleFormSender.Send(currentLevel, 0, 1, levelCompleted); // DeathTrigger = 0, DoorReached = 1
+            Debug.Log("Door Reached Data Sent to Google Forms - Current Level: " + currentLevel + ", Level Completed: " + levelCompleted);
+        }
+
 
         Vector3 initialPlayerScale = player.transform.localScale;
         float duration = 2f;
@@ -88,10 +122,11 @@ public class Door : MonoBehaviour
             yield return null;
         }
 
-        // ... inside CenterPlayerAndCloseDoor coroutine after door/player animation
         player.SetActive(false);
         gameObject.SetActive(false);
         Debug.Log("Player fully disappeared inside door!");
+        Debug.Log("Level Completed!");
+
 
         string currentScene = SceneManager.GetActiveScene().name;
         string nextLevel = "";
@@ -107,12 +142,12 @@ public class Door : MonoBehaviour
         }
         else if (currentScene == "Level3_AvoidTheVoid")
         {
-            Debug.Log("Player reached the door in Level 3! Transitioning to Level 1...");
+            Debug.Log("Player reached the door in Level 3! Transitioning to Level 4...");
             nextLevel = "Level4_AvoidTheVoid";
         }
         else if (currentScene == "Level4_AvoidTheVoid")
         {
-            Debug.Log("Player reached the door in Level 3! Transitioning to Level 1...");
+            Debug.Log("Player reached the door in Level 4! Transitioning to Level 1...");
             nextLevel = "Level1_AvoidTheVoid";
         }
 

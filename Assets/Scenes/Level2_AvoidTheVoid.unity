@@ -119,6 +119,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &11982478
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 11982480}
+  - component: {fileID: 11982479}
+  m_Layer: 0
+  m_Name: Googleanalytics
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &11982479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11982478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6cca935cad0145839350a91df634bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  URL: 
+--- !u!4 &11982480
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11982478}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.2044585, y: 1.0661542, z: 0.027126815}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &118565242
 GameObject:
   m_ObjectHideFlags: 0
@@ -2883,6 +2928,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1524376125}
   - component: {fileID: 1524376124}
+  - component: {fileID: 1524376126}
   m_Layer: 0
   m_Name: DeathZoneForSecond
   m_TagString: DeathZoneForSecond
@@ -2951,6 +2997,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1524376126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1524376123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bdf96e542cdf4d9dae4beeb133eef39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1597900747
 GameObject:
   m_ObjectHideFlags: 0
@@ -3655,6 +3713,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2018882424}
   - component: {fileID: 2018882423}
+  - component: {fileID: 2018882425}
   m_Layer: 0
   m_Name: DeathZoneForFirst
   m_TagString: DeathZoneForFirst
@@ -3723,6 +3782,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2018882425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018882422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bdf96e542cdf4d9dae4beeb133eef39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2022794963
 GameObject:
   m_ObjectHideFlags: 0
@@ -3819,3 +3890,4 @@ SceneRoots:
   - {fileID: 2022794966}
   - {fileID: 1063106178}
   - {fileID: 1909158837}
+  - {fileID: 11982480}
