@@ -22,31 +22,28 @@ public class SendToGoogle : MonoBehaviour
 
     private IEnumerator Post(string sessionID, string currentLevel, string deathTrigger, string doorReached, string levelCompleted)
     {
-        string url = "https://script.google.com/macros/s/AKfycbzmkchTYm-M_l6poTlyUMsZMnnuKLOeFkWjd2RLIEgLGuyszQ3JJonnk1TRxzhYq_fi1w/exec";  // Replace with your Apps Script URL
-        Debug.Log("Sending data to Google Forms: ");
+        string url = "https://script.google.com/macros/s/AKfycbwM6GFDl4gfA7RvcosUL2qFgp5oNs4IPQokark6SVHA2LVYs64SVzD3goIQQIK0y1bc4Q/exec";
+    
+        Debug.Log("Sending data to Google Forms:");
         Debug.Log("Current Level: " + currentLevel);
         Debug.Log("Death Trigger: " + deathTrigger);
         Debug.Log("Door Reached: " + doorReached);
-
+    
         int levelCompletedToSend = 0;
         if (int.TryParse(currentLevel, out int currentLevelInt))
         {
             levelCompletedToSend = Mathf.Max(0, currentLevelInt - 1);
         }
-
-        string jsonData = "{\"deathTrigger\":\"" + deathTrigger + "\", \"doorReached\":\"" + doorReached + "\", \"levelCompleted\":\"" + levelCompletedToSend + "\", \"currentLevel\":\"" + currentLevel + "\"}";
-        Debug.Log("JSON Data: " + jsonData);
-        Debug.Log("Session ID: " + sessionID);
-        Debug.Log("URL: " + url);
-        using (UnityWebRequest www = new UnityWebRequest(url, "POST"))
+    
+        string fullUrl = url + "?deathTrigger=" + deathTrigger + "&doorReached=" + doorReached + "&levelCompleted=" + levelCompletedToSend + "&currentLevel=" + currentLevel;
+        Debug.Log("Final URL: " + fullUrl);
+    
+        using (UnityWebRequest www = UnityWebRequest.Get(fullUrl))
         {
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
             www.downloadHandler = new DownloadHandlerBuffer();
-            www.SetRequestHeader("Content-Type", "application/json");
-
+    
             yield return www.SendWebRequest();
-
+    
             if (www.result == UnityWebRequest.Result.Success)
             {
                 Debug.Log("✅ Data sent successfully to Google Forms: " + www.downloadHandler.text);
