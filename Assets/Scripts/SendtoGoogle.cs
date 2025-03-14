@@ -22,7 +22,7 @@ public class SendToGoogle : MonoBehaviour
 
     private IEnumerator Post(string sessionID, string currentLevel, string deathTrigger, string doorReached, string levelCompleted)
     {
-        string url = "https://script.google.com/a/macros/usc.edu/s/AKfycbzmkchTYm-M_l6poTlyUMsZMnnuKLOeFkWjd2RLIEgLGuyszQ3JJonnk1TRxzhYq_fi1w/exec";  // Replace with your Apps Script URL
+        string url = "https://script.google.com/macros/s/AKfycbzmkchTYm-M_l6poTlyUMsZMnnuKLOeFkWjd2RLIEgLGuyszQ3JJonnk1TRxzhYq_fi1w/exec";  // Replace with your Apps Script URL
         Debug.Log("Sending data to Google Forms: ");
         Debug.Log("Current Level: " + currentLevel);
         Debug.Log("Death Trigger: " + deathTrigger);
