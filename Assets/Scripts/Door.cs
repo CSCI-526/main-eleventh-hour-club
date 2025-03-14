@@ -6,12 +6,27 @@ public class Door : MonoBehaviour
 {
     private bool isClosing = false;
     private Vector3 initialDoorScale;
-    private float closeSpeed = 1f; 
-    private float closeDelay = 0.5f; 
+    private float closeSpeed = 1f;
+    private float closeDelay = 0.5f;
+
+    // Analytics Variables
+    private SendToGoogle _googleFormSender;
+    private PlayerController _playerController;
 
     void Start()
     {
         initialDoorScale = transform.localScale;
+        _googleFormSender = FindObjectOfType<SendToGoogle>();
+        _playerController = FindObjectOfType<PlayerController>();
+
+        if (_googleFormSender == null)
+        {
+            Debug.LogError("SendToGoogle script not found in the scene!");
+        }
+        if (_playerController == null)
+        {
+            Debug.LogError("PlayerController script not found in the scene!");
+        }
     }
 
     void OnTriggerStay2D(Collider2D collision)
@@ -30,7 +45,6 @@ public class Door : MonoBehaviour
     {
         Bounds playerBounds = playerCollider.bounds;
         Bounds doorBounds = GetComponent<BoxCollider2D>().bounds;
-
         return doorBounds.Contains(playerBounds.min) && doorBounds.Contains(playerBounds.max);
     }
 
@@ -44,7 +58,7 @@ public class Door : MonoBehaviour
             playerController.DisableControls();
         }
 
-        // Moving player to the exact center of the door
+        // Move player to the exact center of the door
         Vector3 targetPosition = new Vector3(transform.position.x, player.transform.position.y, player.transform.position.z);
         float moveDuration = 0.5f;
         float elapsedMove = 0f;
@@ -55,32 +69,43 @@ public class Door : MonoBehaviour
             elapsedMove += Time.deltaTime;
             yield return null;
         }
-
         player.transform.position = targetPosition;
 
         Debug.Log("Player centered, closing door...");
-
         yield return new WaitForSeconds(closeDelay);
 
+        if (_googleFormSender != null && _playerController != null)
+        {
+            // Send DoorReached event:
+            // Level: player's current level,
+            // DeathTrigger = 0 (since the player did not die),
+            // DoorReached = 1,
+            // TimeSpent = time in current level.
+            _googleFormSender.Send(_playerController.GetCurrentLevel(), 0, 1, _playerController.GetTimeSpent());
+            Debug.Log("Door Reached Data Sent to Google Forms");
+        }
+
+        // Increment the current level for the next stage.
+        _playerController.IncrementLevel();
+
+        // Animate door shrinking and player disappearing
         Vector3 initialPlayerScale = player.transform.localScale;
         float duration = 2f;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
-            float scaleFactor = Mathf.Lerp(1, 0, elapsed / duration);
-
-            //Shrinking door vertically
+            // Shrink door
             transform.localScale = new Vector3(
                 Mathf.Lerp(initialDoorScale.x, 0, elapsed / duration),
                 initialDoorScale.y,
                 initialDoorScale.z
             );
 
-            //Animate player disappearing from the sides
+            // Animate player disappearing horizontally
             player.transform.localScale = new Vector3(
-                Mathf.Lerp(initialPlayerScale.x, 0, elapsed / duration), // Shrinks only horizontally
-                initialPlayerScale.y, /* Keep height same */
+                Mathf.Lerp(initialPlayerScale.x, 0, elapsed / duration),
+                initialPlayerScale.y,
                 initialPlayerScale.z
             );
 
@@ -88,11 +113,12 @@ public class Door : MonoBehaviour
             yield return null;
         }
 
-        // ... inside CenterPlayerAndCloseDoor coroutine after door/player animation
         player.SetActive(false);
         gameObject.SetActive(false);
         Debug.Log("Player fully disappeared inside door!");
+        Debug.Log("Level Completed!");
 
+        // Determine next level based on current scene name.
         string currentScene = SceneManager.GetActiveScene().name;
         string nextLevel = "";
         if (currentScene == "Level1_AvoidTheVoid")
@@ -107,20 +133,19 @@ public class Door : MonoBehaviour
         }
         else if (currentScene == "Level3_AvoidTheVoid")
         {
-            Debug.Log("Player reached the door in Level 3! Transitioning to Level 1...");
+            Debug.Log("Player reached the door in Level 3! Transitioning to Level 4...");
             nextLevel = "Level4_AvoidTheVoid";
         }
         else if (currentScene == "Level4_AvoidTheVoid")
         {
-            Debug.Log("Player reached the door in Level 3! Transitioning to Level 1...");
+            Debug.Log("Player reached the door in Level 4! Transitioning to Level 1...");
             nextLevel = "Level1_AvoidTheVoid";
         }
 
-        // Store the next level name so the transition scene can load it
+        // Store the next level name so the transition scene can load it.
         PlayerPrefs.SetString("NextLevel", nextLevel);
 
         // Load the transition scene (replace "Transition" with your actual transition scene name)
         SceneManager.LoadScene("Transition");
-
     }
 }
