@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     private Transform leftHand;
     private Transform rightHand;
     private Transform face;
+    private Transform body;
 
     void Start()
     {
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour
         leftHand = transform.Find("Hands/LeftHand");
         rightHand = transform.Find("Hands/RightHand");
         face = transform.Find("Face");
+        body = transform.Find("Body");
     }
 
     void Update()
@@ -79,6 +81,7 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
+        string currentScene = SceneManager.GetActiveScene().name;
         //Level 1
         if (collision.gameObject.CompareTag("DropTrigger"))
         {
@@ -131,8 +134,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Player fell into Death Zone!");
             StartCoroutine(StartFallSequence());
         }
-
-
+        
         //Level 3
 
         if (collision.CompareTag("DropTriggerForThird"))
@@ -176,7 +178,41 @@ public class PlayerController : MonoBehaviour
                 droppingPlatform?.TriggerDrop();
             }
         }
+        
+        // Level 5
 
+        // Check if the player hits the trigger for DropCeilingFirst
+        if (collision.gameObject.CompareTag("DropTriggerForFirst")) {
+            GameObject dropCeil = GameObject.Find("DropCeilingFirst");
+
+            if (dropCeil != null) {
+                DroppingCeiling droppingCeiling = dropCeil.GetComponent<DroppingCeiling>();
+                Debug.Log("TriggerDropCeil() called for DropCeilingFirst!");
+                droppingCeiling?.TriggerDropCeil();
+            }
+        }
+
+        // Check if the player hits the trigger for DropCeilingSecond
+        if (collision.gameObject.CompareTag("DropTriggerForSecond")) {
+            GameObject dropCeil = GameObject.Find("DropCeilingSecond");
+
+            if (dropCeil != null) {
+                DroppingCeiling droppingCeiling = dropCeil.GetComponent<DroppingCeiling>();
+                Debug.Log("TriggerDropCeil() called for DropCeilingSecond!");
+                droppingCeiling?.TriggerDropCeil();
+            }
+        }
+
+        // Check if the player hits the trigger for DropCeilingThird
+        if (collision.gameObject.CompareTag("DropTriggerForThird")) {
+            GameObject dropCeil = GameObject.Find("DropCeilingThird");
+
+            if (dropCeil != null) {
+                DroppingCeiling droppingCeiling = dropCeil.GetComponent<DroppingCeiling>();
+                Debug.Log("TriggerDropCeil() called for DropCeilingThird!");
+                droppingCeiling?.TriggerDropCeil();
+            }
+        }
     }
 
     public IEnumerator StartFallSequence()
@@ -206,6 +242,44 @@ public class PlayerController : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    IEnumerator BreakPlayerApart()
+    {
+        Debug.Log("💀 Player crushed! Breaking apart...");
+
+        isFalling = true; // Disable movement
+
+        // Disable player collision so the broken parts move freely
+        playerCollider.enabled = false;
+        rb.linearVelocity = Vector2.zero;
+        rb.gravityScale = 0; // Disable gravity on main body
+
+        // Detach and scatter limbs
+        ScatterPart(leftLeg);
+        ScatterPart(rightLeg);
+        ScatterPart(leftHand);
+        ScatterPart(rightHand);
+        ScatterPart(face);
+        ScatterPart(body);
+
+        yield return new WaitForSeconds(1.5f);
+        
+        Debug.Log("🔄 Restarting game...");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    // Function to detach and scatter parts
+    void ScatterPart(Transform bodyPart)
+    {
+        if (bodyPart == null) return;
+
+        bodyPart.parent = null; // Detach from player
+        Rigidbody2D partRb = bodyPart.gameObject.AddComponent<Rigidbody2D>();
+        partRb.gravityScale = 1;
+        partRb.AddForce(new Vector2(Random.Range(-3f, 3f), Random.Range(3f, 6f)), ForceMode2D.Impulse);
+        
+        Destroy(bodyPart.gameObject, 1.5f); // Destroy parts after delay
     }
 
     public void DisableControls()
