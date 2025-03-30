@@ -143,13 +143,19 @@ public class Door : MonoBehaviour
         else if (currentScene == "Level3_AvoidTheVoid")
         {
             Debug.Log("Player reached the door in Level 3! Transitioning to Level 4...");
+            Debug.Log("Player reached the door in Level 3! Transitioning to Level 4...");
             nextLevel = "Level4_AvoidTheVoid";
         }
         else if (currentScene == "Level4_AvoidTheVoid")
         {
-            Debug.Log("Player reached the door in Level 4! Transitioning to Level 1...");
-            nextLevel = "Level1_AvoidTheVoid";
+            Debug.Log("Player reached the door in Level 4! Transitioning to Level 5...");
+            nextLevel = "Level5_AvoidTheVoid";
         }
+        else
+         {
+             Debug.Log("Player reached the door in Level 5! Transitioning to Level 1...");
+             nextLevel = "Level1_AvoidTheVoid";
+         }
 
         // Store the next level name so the transition scene can load it
         PlayerPrefs.SetString("NextLevel", nextLevel);

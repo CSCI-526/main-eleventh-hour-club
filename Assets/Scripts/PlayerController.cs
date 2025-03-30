@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     private Transform leftHand;
     private Transform rightHand;
     private Transform face;
+    private Transform body;
 
     // Analytics Variables
     private SendToGoogle _googleFormSender;
@@ -71,6 +72,7 @@ public class PlayerController : MonoBehaviour
 
         // Initialize levelCompletedCount here
         levelCompletedCount = 0;
+        body = transform.Find("Body");
     }
 
     void Update()
@@ -123,7 +125,8 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        //Level 1 Drop Trigger
+        string currentScene = SceneManager.GetActiveScene().name;
+        //Level 1
         if (collision.gameObject.CompareTag("DropTrigger"))
         {
             GameObject dropPlatform = GameObject.Find("DropFloor");
@@ -211,6 +214,52 @@ public class PlayerController : MonoBehaviour
             // You might want to load the next level here
             // SceneManager.LoadScene("NextLevelSceneName");
         }
+        
+        // Level 5
+
+        // Check if the player hits the trigger for DropCeilingFirst
+        if (collision.gameObject.CompareTag("DropTriggerForFirst")) {
+            GameObject dropCeil = GameObject.Find("DropCeilingFirst");
+
+            if (dropCeil != null) {
+                DroppingCeiling droppingCeiling = dropCeil.GetComponent<DroppingCeiling>();
+                Debug.Log("TriggerDropCeil() called for DropCeilingFirst!");
+                droppingCeiling?.TriggerDropCeil();
+            }
+        }
+
+        // Check if the player hits the trigger for DropCeilingSecond
+        if (collision.gameObject.CompareTag("DropTriggerForSecond")) {
+            GameObject dropCeil = GameObject.Find("DropCeilingSecond");
+
+            if (dropCeil != null) {
+                DroppingCeiling droppingCeiling = dropCeil.GetComponent<DroppingCeiling>();
+                Debug.Log("TriggerDropCeil() called for DropCeilingSecond!");
+                droppingCeiling?.TriggerDropCeil();
+            }
+        }
+
+        // Check if the player hits the trigger for DropCeilingThird
+        if (collision.gameObject.CompareTag("DropTriggerForThird")) {
+            GameObject dropCeil = GameObject.Find("DropCeilingThird");
+
+            if (dropCeil != null) {
+                DroppingCeiling droppingCeiling = dropCeil.GetComponent<DroppingCeiling>();
+                Debug.Log("TriggerDropCeil() called for DropCeilingThird!");
+                droppingCeiling?.TriggerDropCeil();
+            }
+        }
+
+        // Check if the player hits the trigger for DropCeilingFourth
+        if (collision.gameObject.CompareTag("DropTriggerForFourth")) {
+            GameObject dropCeil = GameObject.Find("DropCeilingFourth");
+
+            if (dropCeil != null) {
+                DroppingCeiling droppingCeiling = dropCeil.GetComponent<DroppingCeiling>();
+                Debug.Log("TriggerDropCeil() called for DropCeilingFourth!");
+                droppingCeiling?.TriggerDropCeil();
+            }
+        }
     }
 
     public IEnumerator StartFallSequence()
@@ -251,38 +300,42 @@ public class PlayerController : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void IncrementLevelCompleted()
+    IEnumerator BreakPlayerApart()
     {
-        levelCompletedCount++;
+        Debug.Log("💀 Player crushed! Breaking apart...");
+
+        isFalling = true; // Disable movement
+
+        // Disable player collision so the broken parts move freely
+        playerCollider.enabled = false;
+        rb.linearVelocity = Vector2.zero;
+        rb.gravityScale = 0; // Disable gravity on main body
+
+        // Detach and scatter limbs
+        ScatterPart(leftLeg);
+        ScatterPart(rightLeg);
+        ScatterPart(leftHand);
+        ScatterPart(rightHand);
+        ScatterPart(face);
+        ScatterPart(body);
+
+        yield return new WaitForSeconds(1.5f);
+        
+        Debug.Log("🔄 Restarting game...");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public int GetCurrentLevel()
+    // Function to detach and scatter parts
+    void ScatterPart(Transform bodyPart)
     {
-        return currentLevel;
-    }
+        if (bodyPart == null) return;
 
-    public int GetLevelCompletedCount()
-    {
-        return levelCompletedCount;
-    }
-
-    // public void DecreaseLife()
-    // {
-    //     currentLife--;
-    //     Debug.Log("Life decreased. Current lives: " + currentLife);
-    //     // You might want to add logic here for when the player runs out of lives
-    //     if (currentLife <= 0)
-    //     {
-    //         Debug.Log("Game Over!");
-    //         // Potentially trigger a game over sequence or load a game over scene
-    //     }
-    // }
-
-    public void ResetLevel()
-    {
-        currentLevel = 1; // Reset level to 1
-        // levelCompletedCount = 0; // Removed this line
-       // currentLife = 3;   // Reset lives to 3 (you can remove this if not needed)
+        bodyPart.parent = null; // Detach from player
+        Rigidbody2D partRb = bodyPart.gameObject.AddComponent<Rigidbody2D>();
+        partRb.gravityScale = 1;
+        partRb.AddForce(new Vector2(Random.Range(-3f, 3f), Random.Range(3f, 6f)), ForceMode2D.Impulse);
+        
+        Destroy(bodyPart.gameObject, 1.5f); // Destroy parts after delay
     }
 
     public void DisableControls()
