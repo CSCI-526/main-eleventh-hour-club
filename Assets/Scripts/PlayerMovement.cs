@@ -134,7 +134,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Player fell into Death Zone!");
             StartCoroutine(StartFallSequence());
         }
-
+        
         //Level 3
 
         if (collision.CompareTag("DropTriggerForThird"))
@@ -178,7 +178,7 @@ public class PlayerController : MonoBehaviour
                 droppingPlatform?.TriggerDrop();
             }
         }
-
+        
         // Level 5
 
         // Check if the player hits the trigger for DropCeilingFirst

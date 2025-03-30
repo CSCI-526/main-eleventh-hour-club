@@ -13,6 +13,9 @@ TagManager:
   - DropTriggerForSecond
   - DeathZoneForFirst
   - DeathZoneForSecond
+  - DropTriggerForThird
+  - DropTriggerForFourth
+  - DropTriggerForThird2
   layers:
   - Default
   - TransparentFX
