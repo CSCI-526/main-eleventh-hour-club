@@ -32,6 +32,10 @@ public class TransitionManager : MonoBehaviour
         {
             nextLevel = "Level 4";
         }
+        else if (nextLevel == "Level5_AvoidTheVoid")
+        {
+            nextLevel = "Level 5";
+        }
 
         // Update the UI text with the next level info
         if (levelInfoText != null)
