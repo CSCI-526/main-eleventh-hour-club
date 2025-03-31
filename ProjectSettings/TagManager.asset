@@ -16,6 +16,8 @@ TagManager:
   - DropTriggerForThird
   - DropTriggerForFourth
   - DropTriggerForThird2
+  - FallingCeiling
+  - Face
   layers:
   - Default
   - TransparentFX
@@ -24,7 +26,7 @@ TagManager:
   - Water
   - UI
   - Ground
-  - 
+  - Text
   - 
   - 
   - 
