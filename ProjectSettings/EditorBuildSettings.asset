@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/LevelSelect.unity
+    guid: 62c01cd45a83e4dcb9539c0a3dc7c9de
+  - enabled: 1
     path: Assets/Scenes/Level1_AvoidTheVoid.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
@@ -16,13 +19,16 @@ EditorBuildSettings:
     guid: 826b5d924e5df4e0a86190075b409f9e
   - enabled: 1
     path: Assets/Scenes/Level3_AvoidTheVoid.unity
-    guid: a565f753c7af9473b9079c52e9fed429
+    guid: 6d6fac9d429b54b50bc4216bb6861707
   - enabled: 1
     path: Assets/Scenes/Level4_AvoidTheVoid.unity
     guid: 87751a3a92a15489e85439138af42a81
   - enabled: 1
     path: Assets/Scenes/Level5_AvoidTheVoid.unity
     guid: a9f02c2e9a86a4d2d9a7078307e27acf
+  - enabled: 0
+    path: Assets/Scenes/io.unity
+    guid: 6bbcf398e1ef645ba855a44277c1cd6e
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

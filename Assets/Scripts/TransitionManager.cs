@@ -40,7 +40,7 @@ public class TransitionManager : MonoBehaviour
         // Update the UI text with the next level info
         if (levelInfoText != null)
         {
-            levelInfoText.text = "Get Ready! Next Level: " + nextLevel;
+            levelInfoText.text = "Get ready for " + nextLevel;
         }
         else
         {
