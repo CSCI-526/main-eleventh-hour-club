@@ -33,75 +33,57 @@ public class SendToGoogle : MonoBehaviour
 
     // Coroutine that handles the actual web request
     // Note: The 'levelCompleted' string parameter received here is IGNORED when building the URL.
-    private IEnumerator Post(string sessionID, string currentLevel, string deathTrigger, string doorReached, string levelCompleted)
+  private IEnumerator Post(string sessionID, string currentLevel, string deathTrigger, string doorReached, string levelCompleted)
+{
+    if (string.IsNullOrEmpty(URL))
     {
-        // Ensure URL is valid before proceeding
-        if (string.IsNullOrEmpty(URL))
-        {
-             Debug.LogError("Cannot send data: Google Form URL is not configured.");
-             yield break; // Stop the coroutine
-        }
-
-        // *** ADDED: Calculate levelCompletedToSend = currentLevel - 1 ***
-        int levelCompletedToSend = 0; // Default to 0
-        if (int.TryParse(currentLevel, out int currentLevelInt))
-        {
-            // Calculate currentLevel - 1, ensuring it's not negative
-            levelCompletedToSend = Mathf.Max(0, currentLevelInt - 1);
-            Debug.Log($"SendToGoogle: Calculating levelCompleted parameter as currentLevel({currentLevelInt}) - 1 = {levelCompletedToSend}");
-        }
-        else
-        {
-             Debug.LogError($"SendToGoogle: Could not parse currentLevel '{currentLevel}' to an integer.");
-             // Keep levelCompletedToSend = 0 or handle error as needed
-        }
-        // Convert the calculated value to string for the URL
-        string levelCompletedParamValue = levelCompletedToSend.ToString();
-        // ***************************************************************
-
-
-        // Construct the final URL with query parameters matching your Google Apps Script GET parameters
-        // *** MODIFIED: Using the calculated 'levelCompletedParamValue' instead of the passed 'levelCompleted' ***
-        string fullUrl = URL
-                         + "?sessionID=" + sessionID // Add sessionID if your script handles it
-                         + "&currentLevel=" + currentLevel
-                         + "&deathTrigger=" + deathTrigger
-                         + "&doorReached=" + doorReached
-                         + "&levelCompleted=" + levelCompletedParamValue; // Use the calculated value
-
-        // The original 'levelCompleted' parameter passed to this coroutine is now effectively ignored.
-
-        Debug.Log($"Sending data to Google Forms: {fullUrl}");
-
-        // Use UnityWebRequest for GET request
-        using (UnityWebRequest www = UnityWebRequest.Get(fullUrl))
-        {
-            // Set a buffer to receive the response (optional, but good practice)
-            www.downloadHandler = new DownloadHandlerBuffer();
-
-            // Send the request and wait for it to complete
-            yield return www.SendWebRequest();
-
-            // Check the result of the request
-            #if UNITY_2020_1_OR_NEWER // Use result property for newer Unity versions
-            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.result == UnityWebRequest.Result.DataProcessingError)
-            {
-                Debug.LogError($"❌ Error sending data to Google Forms: {www.error} | Response Code: {www.responseCode}");
-            }
-            else
-            {
-                Debug.Log($"✅ Data sent successfully to Google Forms. Response: {www.downloadHandler.text}");
-            }
-            #else // Use older properties for versions before 2020.1
-            if (www.isNetworkError || www.isHttpError)
-            {
-                Debug.LogError($"❌ Error sending data to Google Forms: {www.error} | Response Code: {www.responseCode}");
-            }
-            else
-            {
-                Debug.Log($"✅ Data sent successfully to Google Forms. Response: {www.downloadHandler.text}");
-            }
-            #endif
-        }
+         Debug.LogError("Cannot send data: Google Form URL is not configured.");
+         yield break;
     }
+
+    // For back button events (deathTrigger "2"), force levelCompleted to "0"
+    string levelCompletedParamValue = "0";
+    if (deathTrigger != "2")
+    {
+         if (int.TryParse(currentLevel, out int currentLevelInt))
+         {
+             int levelCompletedToSend = Mathf.Max(0, currentLevelInt - 1);
+             levelCompletedParamValue = levelCompletedToSend.ToString();
+             Debug.Log($"SendToGoogle: Calculating levelCompleted parameter as currentLevel({currentLevelInt}) - 1 = {levelCompletedParamValue}");
+         }
+         else
+         {
+             Debug.LogError($"SendToGoogle: Could not parse currentLevel '{currentLevel}' to an integer.");
+         }
+    }
+    else
+    {
+         Debug.Log("SendToGoogle: Back button event detected, setting levelCompleted parameter to 0");
+    }
+
+    // Build the full URL with all parameters
+    string fullUrl = URL
+                     + "?sessionID=" + sessionID
+                     + "&currentLevel=" + currentLevel
+                     + "&deathTrigger=" + deathTrigger
+                     + "&doorReached=" + doorReached
+                     + "&levelCompleted=" + levelCompletedParamValue;
+
+    Debug.Log($"Sending data to Google Forms: {fullUrl}");
+
+    using (UnityWebRequest www = UnityWebRequest.Get(fullUrl))
+    {
+         www.downloadHandler = new DownloadHandlerBuffer();
+         yield return www.SendWebRequest();
+
+         if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.result == UnityWebRequest.Result.DataProcessingError)
+         {
+             Debug.LogError($"❌ Error sending data to Google Forms: {www.error} | Response Code: {www.responseCode}");
+         }
+         else
+         {
+             Debug.Log($"✅ Data sent successfully to Google Forms. Response: {www.downloadHandler.text}");
+         }
+    }
+}
 }

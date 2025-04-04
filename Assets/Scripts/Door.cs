@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-// Attach this script to the Door GameObject
 [RequireComponent(typeof(BoxCollider2D))]
 public class Door : MonoBehaviour
 {
@@ -15,7 +14,6 @@ public class Door : MonoBehaviour
     [SerializeField] private float closeDelay = 0.5f;
     [SerializeField] private float closeDuration = 1.5f;
     [SerializeField] private string transitionSceneName = "Transition";
-    [SerializeField] private string victorySceneName = "VictoryScene";
     [SerializeField] private int maxLevel = 5;
 
     // References
@@ -73,7 +71,7 @@ public class Door : MonoBehaviour
             yield break;
         }
 
-        // --- Center Player ---
+        // Center the player on the door
         Vector3 startPlayerPos = player.transform.position;
         Vector3 targetPlayerPos = new Vector3(transform.position.x, player.transform.position.y, player.transform.position.z);
         float elapsedMove = 0f;
@@ -89,15 +87,14 @@ public class Door : MonoBehaviour
 
         yield return new WaitForSeconds(closeDelay);
 
-        // --- Handle Level Completion Count (FIXED LOGIC) & Analytics ---
+        // Handle level completion and analytics
         int currentLevel = _playerController.GetCurrentLevel();
         int savedCompletedCount = PlayerPrefs.GetInt("LevelCompletedCount", 0);
-        int maxProgressCount = savedCompletedCount; // Track highest level reached
+        int maxProgressCount = savedCompletedCount;
 
-        // *** FIX for Issue A: Only update count if progressing further ***
         if (currentLevel > savedCompletedCount)
         {
-            maxProgressCount = currentLevel; // Update max progress to the level just completed
+            maxProgressCount = currentLevel;
             PlayerPrefs.SetInt("LevelCompletedCount", maxProgressCount);
             PlayerPrefs.Save();
             Debug.Log($"Advanced Progress! New max level completed: {maxProgressCount} (Saved to PlayerPrefs)");
@@ -107,15 +104,14 @@ public class Door : MonoBehaviour
              Debug.Log($"Replayed level {currentLevel}. Max level completed remains {savedCompletedCount}.");
         }
 
-        // Send Analytics - Use maxProgressCount which reflects highest level achieved
         if (_googleFormSender != null)
         {
-            // DeathTrigger = 0, DoorReached = 1, LevelCompleted = highest level reached
+            // Send analytics: deathTrigger=0, doorReached=1, levelCompleted = highest level achieved
             _googleFormSender.Send(currentLevel, 0, 1, maxProgressCount);
             Debug.Log($"Door Reached Data Sent - Finished Level: {currentLevel}, Max Level Completed: {maxProgressCount}");
         }
 
-        // --- Animate Door Closing and Player Disappearing ---
+        // Animate door closing and player disappearing
         Debug.Log("Closing door and shrinking player...");
         Vector3 initialPlayerScale = player.transform.localScale;
         float elapsedClose = 0f;
@@ -128,31 +124,29 @@ public class Door : MonoBehaviour
             yield return null;
         }
 
-        // --- Cleanup and Transition ---
         Debug.Log("Animation complete. Deactivating player and door.");
         player.SetActive(false);
         gameObject.SetActive(false);
 
-        // Determine next scene (Logic for Issue B - Ensure this sets the correct name)
+        // Determine next scene:
+        // If current level is less than maxLevel, load the next level.
+        // If current level equals maxLevel, wrap around to Level 1.
         string nextSceneToLoad;
         if (currentLevel < maxLevel)
         {
             nextSceneToLoad = $"Level{currentLevel + 1}_AvoidTheVoid";
-            // When finishing Level 2 (currentLevel=2), this correctly sets nextSceneToLoad="Level3_AvoidTheVoid"
             Debug.Log($"Preparing transition to next level: {nextSceneToLoad}");
         }
         else
         {
-            nextSceneToLoad = victorySceneName;
-            Debug.Log($"Max level ({maxLevel}) reached! Preparing transition to victory scene: {nextSceneToLoad}");
+            nextSceneToLoad = "Level1_AvoidTheVoid";
+            Debug.Log($"Completed max level ({maxLevel}). Wrapping around to: {nextSceneToLoad}");
         }
 
-        // Store the name for the transition scene to read
         PlayerPrefs.SetString("NextLevelToLoad", nextSceneToLoad);
         PlayerPrefs.Save();
         Debug.Log($"Stored '{nextSceneToLoad}' in PlayerPrefs['NextLevelToLoad']");
 
-        // Load the intermediate transition scene
         Debug.Log($"Loading transition scene: {transitionSceneName}");
         SceneManager.LoadScene(transitionSceneName);
     }
