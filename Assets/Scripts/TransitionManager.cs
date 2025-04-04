@@ -1,51 +1,26 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;  // Needed for UI Text
-using System.Collections;
 using TMPro;
+using System.Collections;
 
-
+// Handles logic and UI while transitioning between levels
 public class TransitionManager : MonoBehaviour
 {
     [Header("Settings")]
-    public float delayBeforeNextLevel = 3f;  // How long to wait in the transition scene
-    public TextMeshProUGUI levelInfoText; // Reference to the UI Text in your Canvas
+    public float delayBeforeNextLevel = 3f;
+    public TextMeshProUGUI levelInfoText;
 
     void Start()
     {
-        // Retrieve the next level name (default to Level1_AvoidTheVoid if not set)
-        string nextLevel = PlayerPrefs.GetString("NextLevel", "Level1_AvoidTheVoid");
+        string nextLevelKey = PlayerPrefs.GetString("NextLevel", "Level1_AvoidTheVoid");
 
-        if (nextLevel == "Level1_AvoidTheVoid")
-        {
-            nextLevel = "Level 1";
-        }
-        else if (nextLevel == "Level2_AvoidTheVoid")
-        {
-            nextLevel = "Level 2";
-        }
-        else if (nextLevel == "Level3_AvoidTheVoid")
-        {
-            nextLevel = "Level 3";
-        }
-        else if (nextLevel == "Level4_AvoidTheVoid")
-        {
-            nextLevel = "Level 4";
-        }
-        else if (nextLevel == "Level5_AvoidTheVoid")
-        {
-            nextLevel = "Level 5";
-        }
+        // Friendly display name for level
+        string displayName = nextLevelKey.Replace("_AvoidTheVoid", "").Replace("Level", "Level ");
 
-        // Update the UI text with the next level info
         if (levelInfoText != null)
-        {
-            levelInfoText.text = "Get ready for " + nextLevel;
-        }
+            levelInfoText.text = $"Get ready for {displayName}";
         else
-        {
             Debug.LogWarning("Level Info Text is not assigned in TransitionManager.");
-        }
 
         StartCoroutine(LoadNextLevelAfterDelay());
     }
