@@ -2,27 +2,26 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
+// Handles all player control, animations, death, and environmental triggers
 public class PlayerController : MonoBehaviour
 {
     public float speed = 3f;
     public float jumpForce = 6f;
+
     private Rigidbody2D rb;
     private Collider2D playerCollider;
     private bool isGrounded;
     private bool isFalling = false;
 
-    private Transform leftLeg;
-    private Transform rightLeg;
-    private Transform leftHand;
-    private Transform rightHand;
-    private Transform face;
-    private Transform body;
+    // Body part references for animation
+    private Transform leftLeg, rightLeg, leftHand, rightHand, face, body;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
 
+        // Find body parts for animations
         leftLeg = transform.Find("LeftLeg/LeftLegSprite");
         rightLeg = transform.Find("RightLeg/RightLegSprite");
         leftHand = transform.Find("Hands/LeftHand");
@@ -34,14 +33,14 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (!enabled || isFalling) return;
-        
-        float move = Input.GetAxis("Horizontal");
-        rb.linearVelocity = new Vector2(move * speed, rb.linearVelocity.y);
 
-        // Jump if on Ground
+        float move = Input.GetAxis("Horizontal");
+        rb.velocity = new Vector2(move * speed, rb.velocity.y);
+
+        // Handle jumping
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetAxisRaw("Vertical") > 0) && isGrounded)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             isGrounded = false;
         }
 
@@ -81,160 +80,91 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        string currentScene = SceneManager.GetActiveScene().name;
-        //Level 1
-        if (collision.gameObject.CompareTag("DropTrigger"))
-        {
-            GameObject dropPlatform = GameObject.Find("DropFloor");
-
-            if (dropPlatform != null)
-            {
-                DroppingPlatform droppingPlatform = dropPlatform.GetComponent<DroppingPlatform>();
-                droppingPlatform?.TriggerDrop();
-            }
-        }
-
-        if (collision.gameObject.CompareTag("DeathZone"))
+        // General death zones
+        if (collision.CompareTag("DeathZone") || collision.CompareTag("DeathZoneForFirst") || collision.CompareTag("DeathZoneForSecond"))
         {
             Debug.Log("Player fell into Death Zone!");
             StartCoroutine(StartFallSequence());
         }
 
-        //Level 2
-        if (collision.gameObject.CompareTag("DropTriggerForFirst"))
-        {
-            GameObject dropPlatform = GameObject.Find("DropFloorFirst");
+        // --- Level 1 ---
+        if (collision.CompareTag("DropTrigger"))
+            TriggerDrop("DropFloor");
 
-            if (dropPlatform != null)
-            {
-                DroppingPlatform droppingPlatform = dropPlatform.GetComponent<DroppingPlatform>();
-                droppingPlatform?.TriggerDrop();
-            }
-        }
+        // --- Level 2 ---
+        if (collision.CompareTag("DropTriggerForFirst"))
+            TriggerDrop("DropFloorFirst");
 
-        if (collision.gameObject.CompareTag("DeathZoneForFirst"))
-        {
-            Debug.Log("Player fell into Death Zone!");
-            StartCoroutine(StartFallSequence());
-        }
+        if (collision.CompareTag("DropTriggerForSecond"))
+            TriggerDrop("DropFloorSecond");
 
-        if (collision.gameObject.CompareTag("DropTriggerForSecond"))
-        {
-            GameObject dropPlatform = GameObject.Find("DropFloorSecond");
+        // --- Level 3 & 4 (Shared platform shrink logic) ---
+        if (collision.CompareTag("DropTriggerForThird") || collision.CompareTag("DropTriggerForThird2"))
+            TriggerShrink("SafeArea_Right");
 
-            if (dropPlatform != null)
-            {
-                DroppingPlatform droppingPlatform = dropPlatform.GetComponent<DroppingPlatform>();
-                droppingPlatform?.TriggerDrop();
-            }
-        }
+        if (collision.CompareTag("DropTriggerForFourth"))
+            TriggerDrop("DropFloorSecond");
 
-        if (collision.gameObject.CompareTag("DeathZoneForSecond"))
-        {
-            Debug.Log("Player fell into Death Zone!");
-            StartCoroutine(StartFallSequence());
-        }
-        
-        //Level 3
+        // --- Level 5 Ceiling drops ---
+        if (collision.CompareTag("DropTriggerForFirst"))
+            TriggerCeilingDrop("DropCeilingFirst");
+
+        if (collision.CompareTag("DropTriggerForSecond"))
+            TriggerCeilingDrop("DropCeilingSecond");
 
         if (collision.CompareTag("DropTriggerForThird"))
-        {
-            // Find SafeArea_Right by name or use a public reference.
-            GameObject rightFloor = GameObject.Find("SafeArea_Right");
-            if (rightFloor != null)
-            {
-                ShrinkingPlatform shrinkScript = rightFloor.GetComponent<ShrinkingPlatform>();
-                if (shrinkScript != null)
-                {
-                    shrinkScript.TriggerShrink();
-                }
-            }
-        }
+            TriggerCeilingDrop("DropCeilingThird");
 
-        //Level 4
-
-        if (collision.CompareTag("DropTriggerForThird2"))
-        {
-            // Find SafeArea_Right by name or use a public reference.
-            GameObject rightFloor = GameObject.Find("SafeArea_Right");
-            if (rightFloor != null)
-            {
-                ShrinkingPlatform shrinkScript = rightFloor.GetComponent<ShrinkingPlatform>();
-                if (shrinkScript != null)
-                {
-                    shrinkScript.TriggerShrink();
-                }
-            }
-
-        }
-
-        if (collision.gameObject.CompareTag("DropTriggerForFourth"))
-        {
-            GameObject dropPlatform = GameObject.Find("DropFloorSecond");
-
-            if (dropPlatform != null)
-            {
-                DroppingPlatform droppingPlatform = dropPlatform.GetComponent<DroppingPlatform>();
-                droppingPlatform?.TriggerDrop();
-            }
-        }
-        
-        // Level 5
-
-        // Check if the player hits the trigger for DropCeilingFirst
-        if (collision.gameObject.CompareTag("DropTriggerForFirst")) {
-            GameObject dropCeil = GameObject.Find("DropCeilingFirst");
-
-            if (dropCeil != null) {
-                DroppingCeiling droppingCeiling = dropCeil.GetComponent<DroppingCeiling>();
-                Debug.Log("TriggerDropCeil() called for DropCeilingFirst!");
-                droppingCeiling?.TriggerDropCeil();
-            }
-        }
-
-        // Check if the player hits the trigger for DropCeilingSecond
-        if (collision.gameObject.CompareTag("DropTriggerForSecond")) {
-            GameObject dropCeil = GameObject.Find("DropCeilingSecond");
-
-            if (dropCeil != null) {
-                DroppingCeiling droppingCeiling = dropCeil.GetComponent<DroppingCeiling>();
-                Debug.Log("TriggerDropCeil() called for DropCeilingSecond!");
-                droppingCeiling?.TriggerDropCeil();
-            }
-        }
-
-        // Check if the player hits the trigger for DropCeilingThird
-        if (collision.gameObject.CompareTag("DropTriggerForThird")) {
-            GameObject dropCeil = GameObject.Find("DropCeilingThird");
-
-            if (dropCeil != null) {
-                DroppingCeiling droppingCeiling = dropCeil.GetComponent<DroppingCeiling>();
-                Debug.Log("TriggerDropCeil() called for DropCeilingThird!");
-                droppingCeiling?.TriggerDropCeil();
-            }
-        }
-
-        // Check if the player hits the trigger for DropCeilingFourth
-        if (collision.gameObject.CompareTag("DropTriggerForFourth")) {
-            GameObject dropCeil = GameObject.Find("DropCeilingFourth");
-
-            if (dropCeil != null) {
-                DroppingCeiling droppingCeiling = dropCeil.GetComponent<DroppingCeiling>();
-                Debug.Log("TriggerDropCeil() called for DropCeilingFourth!");
-                droppingCeiling?.TriggerDropCeil();
-            }
-        }
+        if (collision.CompareTag("DropTriggerForFourth"))
+            TriggerCeilingDrop("DropCeilingFourth");
     }
 
+    // Generic trigger drop logic
+    void TriggerDrop(string platformName)
+    {
+        GameObject dropPlatform = GameObject.Find(platformName);
+        if (dropPlatform != null)
+        {
+            var script = dropPlatform.GetComponent<DroppingPlatform>();
+            script?.TriggerDrop();
+        }
+        else Debug.LogWarning($"Drop platform '{platformName}' not found.");
+    }
+
+    // Generic trigger shrink logic
+    void TriggerShrink(string platformName)
+    {
+        GameObject platform = GameObject.Find(platformName);
+        if (platform != null)
+        {
+            var shrinkScript = platform.GetComponent<ShrinkingPlatform>();
+            shrinkScript?.TriggerShrink();
+        }
+        else Debug.LogWarning($"Shrinking platform '{platformName}' not found.");
+    }
+
+    // Generic ceiling drop logic
+    void TriggerCeilingDrop(string ceilingName)
+    {
+        GameObject dropCeil = GameObject.Find(ceilingName);
+        if (dropCeil != null)
+        {
+            var ceilingScript = dropCeil.GetComponent<DroppingCeiling>();
+            Debug.Log($"TriggerDropCeil() called for {ceilingName}!");
+            ceilingScript?.TriggerDropCeil();
+        }
+        else Debug.LogWarning($"Ceiling '{ceilingName}' not found.");
+    }
+
+    // Triggers fall animation, disables controls, restarts scene
     public IEnumerator StartFallSequence()
     {
         isFalling = true;
-        rb.linearVelocity = new Vector2(0, -0.5f);
-
+        rb.velocity = new Vector2(0, -0.5f);
+        rb.gravityScale = 0.7f;
         playerCollider.enabled = false;
 
-        rb.gravityScale = 0.7f;
-
+        // Animate hands slightly up
         leftHand.localPosition += new Vector3(0, 0.2f, 0);
         rightHand.localPosition += new Vector3(0, 0.2f, 0);
 
@@ -250,23 +180,20 @@ public class PlayerController : MonoBehaviour
         }
 
         Debug.Log("Restarting game...");
-
         yield return new WaitForSeconds(1.5f);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    // Optional: Death animation when crushed
     IEnumerator BreakPlayerApart()
     {
         Debug.Log("💀 Player crushed! Breaking apart...");
-
-        isFalling = true; // Disable movement
-
-        // Disable player collision so the broken parts move freely
+        isFalling = true;
+        rb.velocity = Vector2.zero;
+        rb.gravityScale = 0;
         playerCollider.enabled = false;
-        rb.linearVelocity = Vector2.zero;
-        rb.gravityScale = 0; // Disable gravity on main body
 
-        // Detach and scatter limbs
+        // Detach body parts and scatter them
         ScatterPart(leftLeg);
         ScatterPart(rightLeg);
         ScatterPart(leftHand);
@@ -275,27 +202,26 @@ public class PlayerController : MonoBehaviour
         ScatterPart(body);
 
         yield return new WaitForSeconds(1.5f);
-        
         Debug.Log("🔄 Restarting game...");
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    // Function to detach and scatter parts
-    void ScatterPart(Transform bodyPart)
+    void ScatterPart(Transform part)
     {
-        if (bodyPart == null) return;
+        if (part == null) return;
 
-        bodyPart.parent = null; // Detach from player
-        Rigidbody2D partRb = bodyPart.gameObject.AddComponent<Rigidbody2D>();
+        part.parent = null;
+        var partRb = part.gameObject.AddComponent<Rigidbody2D>();
         partRb.gravityScale = 1;
         partRb.AddForce(new Vector2(Random.Range(-3f, 3f), Random.Range(3f, 6f)), ForceMode2D.Impulse);
-        
-        Destroy(bodyPart.gameObject, 1.5f); // Destroy parts after delay
+
+        Destroy(part.gameObject, 1.5f); // Cleanup after animation
     }
 
+    // Disables movement and physics on the player
     public void DisableControls()
     {
-        rb.linearVelocity = Vector2.zero;
+        rb.velocity = Vector2.zero;
         rb.isKinematic = true;
         enabled = false;
     }
