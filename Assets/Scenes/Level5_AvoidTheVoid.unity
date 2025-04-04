@@ -933,6 +933,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de4a4a521b0ca49339ee1850a23c99e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  centerPlayerDuration: 0.5
+  closeDelay: 0.5
+  closeDuration: 1.5
+  transitionSceneName: Transition
+  victorySceneName: VictoryScene
+  maxLevel: 5
 --- !u!1 &319690395
 GameObject:
   m_ObjectHideFlags: 0
@@ -2470,6 +2476,51 @@ Transform:
   - {fileID: 2101177222}
   - {fileID: 1609121373}
   m_Father: {fileID: 118565243}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &830595139
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 830595141}
+  - component: {fileID: 830595140}
+  m_Layer: 0
+  m_Name: GoogleAnalytics
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &830595140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830595139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6cca935cad0145839350a91df634bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  URL: https://script.google.com/macros/s/AKfycbwM6GFDl4gfA7RvcosUL2qFgp5oNs4IPQokark6SVHA2LVYs64SVzD3goIQQIK0y1bc4Q/exec
+--- !u!4 &830595141
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 830595139}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -7.869403, y: -0.552384, z: 0.058917325}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &896058550
 GameObject:
@@ -5960,3 +6011,4 @@ SceneRoots:
   - {fileID: 1063106178}
   - {fileID: 1909158837}
   - {fileID: 1777280611}
+  - {fileID: 830595141}

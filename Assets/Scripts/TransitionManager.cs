@@ -1,59 +1,73 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;  // Needed for UI Text
+using UnityEngine.UI;  // Required if using standard UI Text
 using System.Collections;
-using TMPro;
-
+using TMPro; // Required if using TextMeshPro
 
 public class TransitionManager : MonoBehaviour
 {
     [Header("Settings")]
-    public float delayBeforeNextLevel = 3f;  // How long to wait in the transition scene
-    public TextMeshProUGUI levelInfoText; // Reference to the UI Text in your Canvas
+    [Tooltip("How long (in seconds) to display the transition screen before loading the next level.")]
+    public float delayBeforeNextLevel = 3f;
+
+    [Header("UI References")]
+    [Tooltip("Assign the TextMeshPro UI element used to display 'Get ready for Level X'.")]
+    public TextMeshProUGUI levelInfoText; // Reference to the TextMeshPro UI element
 
     void Start()
     {
-        // Retrieve the next level name (default to Level1_AvoidTheVoid if not set)
-        string nextLevel = PlayerPrefs.GetString("NextLevel", "Level1_AvoidTheVoid");
+        // *** CORRECTED KEY: Use "NextLevelToLoad" to match Door.cs ***
+        string sceneNameToLoad = PlayerPrefs.GetString("NextLevelToLoad", "Level1_AvoidTheVoid"); // Default if key not found
 
-        if (nextLevel == "Level1_AvoidTheVoid")
-        {
-            nextLevel = "Level 1";
-        }
-        else if (nextLevel == "Level2_AvoidTheVoid")
-        {
-            nextLevel = "Level 2";
-        }
-        else if (nextLevel == "Level3_AvoidTheVoid")
-        {
-            nextLevel = "Level 3";
-        }
-        else if (nextLevel == "Level4_AvoidTheVoid")
-        {
-            nextLevel = "Level 4";
-        }
-        else if (nextLevel == "Level5_AvoidTheVoid")
-        {
-            nextLevel = "Level 5";
-        }
+        // Add a debug log to see exactly what was retrieved
+        Debug.Log($"Transition Scene: Read scene name from PlayerPrefs['NextLevelToLoad']: '{sceneNameToLoad}'");
 
-        // Update the UI text with the next level info
+        // --- Prepare Display Name ---
+        // (This part only affects the text shown, not the scene loaded)
+        string displayName = "Unknown Level"; // Default display name
+
+        if (sceneNameToLoad == "Level1_AvoidTheVoid") { displayName = "Level 1"; }
+        else if (sceneNameToLoad == "Level2_AvoidTheVoid") { displayName = "Level 2"; }
+        else if (sceneNameToLoad == "Level3_AvoidTheVoid") { displayName = "Level 3"; }
+        else if (sceneNameToLoad == "Level4_AvoidTheVoid") { displayName = "Level 4"; }
+        else if (sceneNameToLoad == "Level5_AvoidTheVoid") { displayName = "Level 5"; }
+        // Add cases for VictoryScene or other special scenes if needed
+        else if (sceneNameToLoad == "VictoryScene") { displayName = "Victory!"; } // Example
+
+
+        // --- Update UI Text ---
         if (levelInfoText != null)
         {
-            levelInfoText.text = "Get ready for " + nextLevel;
+            levelInfoText.text = "Get ready for " + displayName;
+            Debug.Log($"Transition Scene: Displaying text: '{levelInfoText.text}'");
         }
         else
         {
-            Debug.LogWarning("Level Info Text is not assigned in TransitionManager.");
+            Debug.LogWarning("TransitionManager: Level Info Text (TextMeshProUGUI) is not assigned in the Inspector.");
         }
 
-        StartCoroutine(LoadNextLevelAfterDelay());
+        // --- Start Coroutine to Load ---
+        // Pass the actual scene name to load to the coroutine
+        StartCoroutine(LoadNextLevelAfterDelay(sceneNameToLoad));
     }
 
-    IEnumerator LoadNextLevelAfterDelay()
+    IEnumerator LoadNextLevelAfterDelay(string sceneToLoad)
     {
+        // Wait for the specified delay
         yield return new WaitForSeconds(delayBeforeNextLevel);
-        string nextLevel = PlayerPrefs.GetString("NextLevel", "Level1_AvoidTheVoid");
-        SceneManager.LoadScene(nextLevel);
+
+        // Load the scene whose name was retrieved from PlayerPrefs in Start()
+        Debug.Log($"Transition Scene: Delay finished. Attempting to load scene: '{sceneToLoad}'");
+
+        // Basic check if the scene name seems valid (optional)
+        if (string.IsNullOrEmpty(sceneToLoad) || sceneToLoad == "ERROR_NO_SCENE_IN_PREFS") // Check against potential error strings
+        {
+             Debug.LogError($"Transition Scene: Invalid scene name '{sceneToLoad}' retrieved. Loading default Level 1 instead.");
+             SceneManager.LoadScene("Level1_AvoidTheVoid"); // Load a fallback scene
+        }
+        else
+        {
+             SceneManager.LoadScene(sceneToLoad);
+        }
     }
 }

@@ -185,6 +185,51 @@ Transform:
   - {fileID: 2137940799}
   m_Father: {fileID: 1927370801}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &172886848
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 172886850}
+  - component: {fileID: 172886849}
+  m_Layer: 0
+  m_Name: GoogleAnalytics
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &172886849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 172886848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6cca935cad0145839350a91df634bd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  URL: https://script.google.com/macros/s/AKfycbwM6GFDl4gfA7RvcosUL2qFgp5oNs4IPQokark6SVHA2LVYs64SVzD3goIQQIK0y1bc4Q/exec
+--- !u!4 &172886850
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 172886848}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -7.869403, y: -0.552384, z: 0.058917325}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &316658487
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,6 +377,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de4a4a521b0ca49339ee1850a23c99e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  centerPlayerDuration: 0.5
+  closeDelay: 0.5
+  closeDuration: 1.5
+  transitionSceneName: Transition
+  victorySceneName: VictoryScene
+  maxLevel: 5
 --- !u!1 &319690395
 GameObject:
   m_ObjectHideFlags: 0
@@ -3573,6 +3624,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2018882424}
   - component: {fileID: 2018882423}
+  - component: {fileID: 2018882425}
   m_Layer: 0
   m_Name: DeathZone
   m_TagString: DeathZone
@@ -3641,6 +3693,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2018882425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2018882422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bdf96e542cdf4d9dae4beeb133eef39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2056049062
 GameObject:
   m_ObjectHideFlags: 0
@@ -3825,3 +3889,4 @@ SceneRoots:
   - {fileID: 673900862}
   - {fileID: 382666111}
   - {fileID: 2056049064}
+  - {fileID: 172886850}
