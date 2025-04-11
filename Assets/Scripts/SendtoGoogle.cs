@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 public class SendToGoogle : MonoBehaviour
 {
     // Assign your Google Apps Script URL in the Inspector
+    // Canvas is fixed and data is being collected correctly
     [SerializeField] private string URL = "https://script.google.com/macros/s/AKfycbwM6GFDl4gfA7RvcosUL2qFgp5oNs4IPQokark6SVHA2LVYs64SVzD3goIQQIK0y1bc4Q/exec"; // Replace with YOUR URL if different
 
     private long _sessionID;
