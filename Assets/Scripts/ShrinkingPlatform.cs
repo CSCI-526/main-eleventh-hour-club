@@ -10,7 +10,6 @@ public class ShrinkingPlatform : MonoBehaviour
     [Header("Animation Settings")]
     public float shrinkDuration = 2.0f; // Time over which the platform shrinks
 
-    // Right edge position (in world space) remains fixed.
     private float rightEdgeX;
 
     private bool isShrinking = false;

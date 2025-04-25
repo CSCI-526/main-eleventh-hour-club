@@ -128,9 +128,6 @@ public class Door : MonoBehaviour
         player.SetActive(false);
         gameObject.SetActive(false);
 
-        // Determine next scene:
-        // If current level is less than maxLevel, load the next level.
-        // If current level equals maxLevel, wrap around to Level 1.
         string nextSceneToLoad;
         if (currentLevel < maxLevel)
         {

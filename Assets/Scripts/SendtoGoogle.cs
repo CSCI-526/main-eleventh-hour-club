@@ -5,8 +5,7 @@ using UnityEngine.Networking;
 
 public class SendToGoogle : MonoBehaviour
 {
-    // Assign your Google Apps Script URL in the Inspector
-    // Canvas is fixed and data is being collected correctly
+
     [SerializeField] private string URL = "https://script.google.com/macros/s/AKfycbwM6GFDl4gfA7RvcosUL2qFgp5oNs4IPQokark6SVHA2LVYs64SVzD3goIQQIK0y1bc4Q/exec"; // Replace with YOUR URL if different
 
     private long _sessionID;
@@ -23,8 +22,7 @@ public class SendToGoogle : MonoBehaviour
         }
     }
 
-    // Public method called by other scripts to send data
-    // Note: The 'levelCompleted' argument passed here will be IGNORED below.
+
     public void Send(int currentLevel, int deathTrigger, int doorReached, int levelCompleted)
     {
         // Start the coroutine to handle the web request
@@ -32,8 +30,6 @@ public class SendToGoogle : MonoBehaviour
         StartCoroutine(Post(_sessionID.ToString(), currentLevel.ToString(), deathTrigger.ToString(), doorReached.ToString(), levelCompleted.ToString()));
     }
 
-    // Coroutine that handles the actual web request
-    // Note: The 'levelCompleted' string parameter received here is IGNORED when building the URL.
   private IEnumerator Post(string sessionID, string currentLevel, string deathTrigger, string doorReached, string levelCompleted)
 {
     if (string.IsNullOrEmpty(URL))

@@ -331,9 +331,6 @@ public class PlayerController : MonoBehaviour
         Destroy(bodyPart.gameObject, 2.0f);
     }
 
-    // --- Helper Methods ---
-
-    // Call this to get the current level number determined in Start()
     public int GetCurrentLevel()
     {
         return currentLevel;
@@ -350,16 +347,11 @@ public class PlayerController : MonoBehaviour
          }
     }
 
-     // Maybe add an EnableControls() if needed later
-     // public void EnableControls() { enabled = true; if (rb != null) rb.isKinematic = false; }
-
-    // Reset game progress (called from a menu maybe?) - Resets PlayerPrefs count too
     public void ResetGameProgress()
     {
         PlayerPrefs.SetInt("LevelCompletedCount", 0);
         PlayerPrefs.Save(); // Good practice to save immediately after setting
         Debug.Log("Game progress reset (LevelCompletedCount set to 0 in PlayerPrefs)");
-        // Optionally reload the first level or main menu
-        // SceneManager.LoadScene("Level1_AvoidTheVoid");
+        
     }
 }
